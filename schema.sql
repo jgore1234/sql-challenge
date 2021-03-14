@@ -1,97 +1,68 @@
-﻿-- Create the titles table, with a primary id and a title
+﻿-- CREATE AND IMPORT  TABLES 
 
-
-
--- Create an employees table, with the following: 
---    employee number, 
---    employee title id,
---    birth date
---    first name
---    last name
---    sex
---    hire date
--- set the foreign key and primary key relationships accordingly
-CREATE TABLE "Employees" (
-    "emp_no" INTEGER   NOT NULL,
-    "emp_title_id" VARCHAR   NOT NULL,
-    "birth_date" DATE   NOT NULL,
-    "first_name" VARCHAR   NOT NULL,
-    "last_name" VARCHAR   NOT NULL,
-    "sex" VARCHAR   NOT NULL,
-    "hire_date" DATE   NOT NULL,
-    CONSTRAINT "pk_Employees" PRIMARY KEY (
-        "emp_no"
-     )
+-- title table
+DROP TABLE IF EXISTS title;
+--
+CREATE TABLE title (
+    title_id VARCHAR(50) PRIMARY KEY,
+    title varchar   NOT NULL
 );
 
-CREATE TABLE "Titles" (
-    "title_id" VARCHAR   NOT NULL,
-    "title" VARCHAR   NOT NULL
+SELECT *
+FROM title;
+
+-- employee table
+DROP TABLE IF EXISTS employee;
+--
+CREATE TABLE employee (
+    emp_no INT PRIMARY KEY,
+    emp_title_id VARCHAR(50),
+    birth_date DATE   NOT NULL,
+    first_name VARCHAR   NOT NULL,
+    last_name VARCHAR   NOT NULL,
+    sex VARCHAR(50)   NOT NULL,
+    hire_date DATE   NOT NULL,
+    FOREIGN KEY (emp_title_id) REFERENCES title(title_id)
+);
+SELECT *
+FROM employee;
+
+-- department table
+DROP TABLE IF EXISTS department;
+--
+CREATE TABLE department (
+    dept_no VARCHAR(50) PRIMARY KEY,
+    dept_name VARCHAR   NOT NULL
 );
 
--- Create an salaries table, with the following: 
---    salary 
---    employee number
--- set the foreign key and primary key relationships accordingly
-
-
-CREATE TABLE "Salaries" (
-    "emp_no" INTEGER   NOT NULL,
-    "salary" INTEGER   NOT NULL,
-    CONSTRAINT "pk_Salaries" PRIMARY KEY (
-        "emp_no"
-     )
+-- dept_emp table
+DROP TABLE IF EXISTS dept_emp;
+--
+CREATE TABLE dept_emp (
+    emp_no INT ,
+	FOREIGN KEY (emp_no) REFERENCES employee(emp_no),
+    dept_no VARCHAR(50),
+	FOREIGN KEY (dept_no) REFERENCES department(dept_no),
+	PRIMARY KEY(emp_no, dept_no)
 );
 
--- Create an dept_emp table, with the following: 
---    department number, 
---    employee number
--- set the foreign key and primary key relationships accordingly
-
-CREATE TABLE "Department_emp" (
-    "emp_no" INTEGER   NOT NULL,
-    "dept_no" VARCHAR   NOT NULL,
-    CONSTRAINT "pk_Department_emp" PRIMARY KEY (
-        "emp_no"
-     )
+-- dept_manager table
+DROP TABLE IF EXISTS dept_manager;
+CREATE TABLE dept_manager (
+    dept_no VARCHAR(50),
+    emp_no INT ,
+	PRIMARY KEY (emp_no),
+	FOREIGN KEY (dept_no) REFERENCES department(dept_no),
+	FOREIGN KEY (emp_no) REFERENCES employee(emp_no)
 );
 
--- Create an departments table, with the following: 
---    department number, 
---    department name
--- set the primary key relationships accordingly
-CREATE TABLE "Department_Manager" (
-    "dept_no" VARCHAR   NOT NULL,
-    "emp_no" INTEGER   NOT NULL,
-    CONSTRAINT "pk_Department_Manager" PRIMARY KEY (
-        "emp_no"
-     )
+	
+-- salary table	
+DROP TABLE IF EXISTS salary;
+CREATE TABLE salary (
+    emp_no INT PRIMARY KEY,
+    salary INT NOT NULL,
+	FOREIGN KEY (emp_no) REFERENCES employee(emp_no)
 );
-
--- Create an departments table, with the following: 
---    department number, 
---    department name
--- set the primary key relationships accordingly
-CREATE TABLE "Departments" (
-    "dept_no" VARCHAR   NOT NULL,
-    "dept_name" VARCHAR   NOT NULL
-);
-
-ALTER TABLE "Employees" ADD CONSTRAINT "fk_Employees_emp_title_id" FOREIGN KEY("emp_title_id")
-REFERENCES "Titles" ("title_id");
-
-ALTER TABLE "Salaries" ADD CONSTRAINT "fk_Salaries_emp_no" FOREIGN KEY("emp_no")
-REFERENCES "Employees" ("emp_no");
-
-ALTER TABLE "Department_emp" ADD CONSTRAINT "fk_Department_emp_emp_no" FOREIGN KEY("emp_no")
-REFERENCES "Employees" ("emp_no");
-
-ALTER TABLE "Department_emp" ADD CONSTRAINT "fk_Department_emp_dept_no" FOREIGN KEY("dept_no")
-REFERENCES "Departments" ("dept_no");
-
-ALTER TABLE "Department_Manager" ADD CONSTRAINT "fk_Department_Manager_dept_no" FOREIGN KEY("dept_no")
-REFERENCES "Departments" ("dept_no");
-
-ALTER TABLE "Department_Manager" ADD CONSTRAINT "fk_Department_Manager_emp_no" FOREIGN KEY("emp_no")
-REFERENCES "Employees" ("emp_no");
-
+SELECT *
+FROM  salary;
